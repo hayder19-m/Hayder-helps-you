@@ -1,0 +1,1349 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2563eb">
+<title>Hayder Helps You — رسام الدوائر المنطقية</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%232563eb'/%3E%3Cstop offset='100%25' stop-color='%230ea5e9'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Cpath d='M19 16v32M45 16v32M19 32h26' stroke='%23fff' stroke-width='6' stroke-linecap='round'/%3E%3Ccircle cx='19' cy='16' r='4' fill='%2334d399'/%3E%3Ccircle cx='45' cy='48' r='4' fill='%2334d399'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  color-scheme:light;
+  --bg:#f1f5f9; --surface:#ffffff; --surface-2:#f8fafc; --ink:#0f172a; --ink-2:#475569;
+  --line:#cbd5e1; --grid:#e2e8f0;
+  --hi:#059669; --hi-on:#ffffff; --hi-bg:#d1fae5; --hi-text:#065f46; --lo:#94a3b8;
+  --accent:#2563eb; --accent-hover:#1d4ed8; --accent-on:#ffffff; --accent-soft:#dbeafe;
+  --row-cur:#eff6ff; --err:#b91c1c; --err-bg:#fee2e2;
+  --shadow:0 1px 3px rgba(15,23,42,.06), 0 1px 2px rgba(15,23,42,.04);
+  --shadow-md:0 4px 12px rgba(15,23,42,.07);
+  --radius:12px;
+  --font-ui:'IBM Plex Sans Arabic', system-ui, -apple-system, 'Segoe UI', Tahoma, sans-serif;
+  --font-mono:'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0b1117; --surface:#111923; --surface-2:#16212e; --ink:#f1f5f9; --ink-2:#94a3b8;
+    --line:#243242; --grid:#182330;
+    --hi:#34d399; --hi-on:#052e16; --hi-bg:#064e3b; --hi-text:#6ee7b7; --lo:#566979;
+    --accent:#60a5fa; --accent-hover:#93c5fd; --accent-on:#0b1830; --accent-soft:#1e3a5f;
+    --row-cur:#172538; --err:#fca5a5; --err-bg:#450a0a;
+    --shadow:0 1px 3px rgba(0,0,0,.3); --shadow-md:0 6px 18px rgba(0,0,0,.35);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0b1117; --surface:#111923; --surface-2:#16212e; --ink:#f1f5f9; --ink-2:#94a3b8;
+  --line:#243242; --grid:#182330;
+  --hi:#34d399; --hi-on:#052e16; --hi-bg:#064e3b; --hi-text:#6ee7b7; --lo:#566979;
+  --accent:#60a5fa; --accent-hover:#93c5fd; --accent-on:#0b1830; --accent-soft:#1e3a5f;
+  --row-cur:#172538; --err:#fca5a5; --err-bg:#450a0a;
+  --shadow:0 1px 3px rgba(0,0,0,.3); --shadow-md:0 6px 18px rgba(0,0,0,.35);
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+[hidden]:not([hidden=until-found i]){display:none!important}
+html{scroll-padding-top:74px}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--font-ui); font-size:15px; line-height:1.6;
+  min-height:100vh; display:flex; flex-direction:column;
+}
+button,input{font-family:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+code,.mono{font-family:var(--font-mono)}
+
+/* Top App Navbar */
+.navbar{
+  position:sticky; top:0; z-index:50;
+  background:color-mix(in srgb, var(--surface) 88%, transparent);
+  backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+}
+.nav-inner{
+  max-width:1140px; margin-inline:auto; padding:10px 18px;
+  display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px;
+}
+.brand{display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--ink)}
+.brand-icon{
+  width:40px; height:40px; border-radius:11px;
+  background:linear-gradient(135deg, var(--accent), #0ea5e9);
+  color:#fff; display:grid; place-items:center; flex-shrink:0;
+  box-shadow:0 2px 8px rgba(37,99,235,.28);
+}
+.brand-text h1{margin:0; font-size:18px; font-weight:700; line-height:1.2; direction:ltr; unicode-bidi:isolate; text-align:start}
+.brand-text span{display:block; font-size:12px; color:var(--ink-2)}
+
+.nav-controls{display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+.lang-seg{
+  display:inline-flex; background:var(--bg); border:1px solid var(--line);
+  border-radius:9px; padding:3px; gap:2px;
+}
+.lang-btn{
+  border:0; background:transparent; color:var(--ink-2);
+  padding:5px 10px; border-radius:6px; font-size:13px; font-weight:600;
+  cursor:pointer; transition:all .15s;
+}
+.lang-btn:hover{color:var(--ink)}
+.lang-btn[aria-pressed="true"]{
+  background:var(--surface); color:var(--accent);
+  box-shadow:0 1px 3px rgba(0,0,0,.1);
+}
+.icon-btn{
+  width:36px; height:36px; border-radius:9px; border:1px solid var(--line);
+  background:var(--surface); color:var(--ink); display:grid; place-items:center;
+  cursor:pointer; transition:border-color .15s, color .15s;
+}
+.icon-btn:hover{border-color:var(--accent); color:var(--accent)}
+
+/* Main Container */
+.app{
+  width:100%; max-width:1140px; margin-inline:auto;
+  padding:20px 18px 44px; display:flex; flex-direction:column; gap:18px; flex:1;
+}
+.hero-sub{margin:0 0 4px; color:var(--ink-2); font-size:14.5px; max-width:74ch}
+
+.panel{
+  background:var(--surface); border:1px solid var(--line);
+  border-radius:var(--radius); padding:18px; min-width:0;
+  box-shadow:var(--shadow);
+}
+.panel h2{margin:0 0 12px; font-size:16px; font-weight:700}
+.panel-head{
+  display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between;
+  gap:10px 16px; margin-bottom:14px;
+}
+.panel-head h2{margin:0; display:flex; align-items:center; gap:8px}
+.panel-tools{display:flex; flex-wrap:wrap; align-items:center; gap:8px}
+
+/* Input Panel */
+.field-label{display:block; font-size:13px; font-weight:600; color:var(--ink-2); margin-bottom:6px}
+.eq-row{display:flex; gap:8px}
+#eq{
+  flex:1; min-width:0; direction:ltr; text-align:left; font-family:var(--font-mono); font-size:18px;
+  padding:11px 14px; border:1.5px solid var(--line); border-radius:9px; background:var(--surface-2);
+  transition:border-color .15s, box-shadow .15s;
+}
+#eq:focus{border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); outline:none}
+.btn{
+  border:0; border-radius:9px; padding:0 22px; font-size:15px; font-weight:600; cursor:pointer;
+  background:var(--accent); color:var(--accent-on); min-height:48px;
+  transition:background .15s, transform .08s;
+}
+.btn:hover{background:var(--accent-hover)}
+.btn:active{transform:scale(.98)}
+.btn-sm{
+  border:1px solid var(--line); border-radius:8px; padding:6px 12px; font-size:13px; font-weight:600;
+  cursor:pointer; background:var(--surface-2); color:var(--ink);
+  display:inline-flex; align-items:center; gap:6px; transition:all .15s;
+}
+.btn-sm:hover{border-color:var(--accent); color:var(--accent); background:var(--surface)}
+
+.keys{display:flex; flex-wrap:wrap; gap:6px; margin-top:10px}
+.key{
+  min-width:44px; height:36px; border:1px solid var(--line); border-radius:8px;
+  background:var(--surface-2); font-family:var(--font-mono); font-size:16px; font-weight:500;
+  cursor:pointer; transition:all .12s;
+}
+.key:hover{border-color:var(--accent); color:var(--accent); background:var(--surface)}
+.examples{display:flex; flex-wrap:wrap; align-items:center; gap:6px 8px; margin-top:12px; font-size:13px; color:var(--ink-2)}
+.chip{
+  border:1px solid var(--line); background:var(--surface-2); border-radius:999px;
+  padding:4px 12px; cursor:pointer; font-family:var(--font-mono); font-size:13px;
+  direction:ltr; transition:all .12s;
+}
+.chip:hover{border-color:var(--accent); color:var(--accent); background:var(--surface)}
+.msg{
+  margin:12px 0 0; padding:10px 14px; border-radius:8px;
+  background:var(--err-bg); color:var(--err); font-size:14px; font-weight:500;
+}
+details.syntax{margin-top:12px; font-size:13.5px; color:var(--ink-2)}
+details.syntax summary{cursor:pointer; color:var(--ink); font-weight:600}
+details.syntax ul{margin:8px 0 0; padding-inline-start:20px; display:grid; gap:5px}
+details.syntax code{
+  color:var(--ink); background:var(--bg); border:1px solid var(--line);
+  border-radius:5px; padding:1px 6px; direction:ltr; unicode-bidi:isolate;
+}
+
+#result{display:flex; flex-direction:column; gap:18px; transition:opacity .15s}
+#result.stale{opacity:.45}
+
+/* Signal Toggles */
+.toggles{display:flex; flex-wrap:wrap; gap:7px; align-items:center}
+.toggles-label{font-size:13px; color:var(--ink-2); font-weight:500}
+.tog{
+  display:inline-flex; direction:ltr; border:1px solid var(--line); border-radius:8px; overflow:hidden;
+  background:var(--surface); cursor:pointer; font-family:var(--font-mono); font-size:14px; padding:0;
+  transition:border-color .15s;
+}
+.tog:hover{border-color:var(--accent)}
+.tog .tn{padding:5px 10px; font-weight:600}
+.tog .tv{padding:5px 0; min-width:34px; text-align:center; background:var(--surface-2); border-inline-start:1px solid var(--line); transition:all .15s}
+.tog[aria-pressed="true"] .tv{background:var(--hi); color:var(--hi-on); font-weight:700}
+
+.eqcap{
+  margin:0 0 10px; font-size:15px; direction:ltr; text-align:left;
+  unicode-bidi:isolate; padding:6px 10px; background:var(--surface-2);
+  border:1px solid var(--line); border-radius:8px; display:inline-block;
+}
+.eqcap code{font-size:15px; font-weight:600}
+
+.canvas{
+  direction:ltr; overflow:auto; border:1px solid var(--line); border-radius:10px; padding:10px;
+  background-color:var(--surface);
+  background-image:linear-gradient(var(--grid) 1px, transparent 1px),linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size:20px 20px; background-attachment:local;
+}
+.canvas svg{display:block; margin-inline:auto}
+.legend{margin:12px 0 0; font-size:13px; color:var(--ink-2); display:flex; flex-wrap:wrap; align-items:center; gap:6px 18px}
+.legend i{display:inline-block; width:20px; height:3.5px; border-radius:2px; vertical-align:middle; margin-inline-end:6px}
+.legend .l-hi{background:var(--hi)}.legend .l-lo{background:var(--lo)}
+
+/* SVG styles */
+.net{fill:none; stroke:var(--lo); stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round}
+.net.on{stroke:var(--hi); stroke-width:2.5}
+.dot{fill:var(--lo)}.dot.on{fill:var(--hi)}
+.gate-body{fill:var(--surface); stroke:var(--ink); stroke-width:1.8; stroke-linejoin:round}
+.gate-body.on{stroke:var(--hi)}
+.gate-arc{fill:none; stroke:var(--ink); stroke-width:1.8}.gate-arc.on{stroke:var(--hi)}
+.gtag{font:600 9.5px var(--font-mono); fill:var(--ink-2); text-anchor:middle; letter-spacing:.04em}
+.vlabel{font:600 14px var(--font-mono); fill:var(--ink); text-anchor:middle}
+.olabel{font:600 16px var(--font-mono); fill:var(--ink)}
+.oval{fill:var(--surface); stroke:var(--lo); stroke-width:1.8}
+.otext{font:600 13px var(--font-mono); fill:var(--ink); text-anchor:middle}
+.outg.on .oval{fill:var(--hi); stroke:var(--hi)}
+.outg.on .otext{fill:var(--hi-on)}
+@media (prefers-reduced-motion:no-preference){
+  .net,.dot,.gate-body,.gate-arc,.oval{transition:stroke .15s,fill .15s}
+}
+
+/* Lower Grid */
+.lower{display:grid; gap:18px; grid-template-columns:minmax(0,1fr)}
+@media (min-width:900px){.lower{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr); align-items:start}}
+
+/* Truth Table */
+.mid-toggle{display:inline-flex; align-items:center; gap:6px; font-size:13px; color:var(--ink-2); cursor:pointer}
+.tt-wrap{direction:ltr; position:relative; max-height:460px; overflow:auto; border:1px solid var(--line); border-radius:9px}
+table.tt{border-collapse:separate; border-spacing:0; width:100%; font-family:var(--font-mono); font-size:14px}
+.tt th,.tt td{padding:6px 12px; text-align:center; border-bottom:1px solid var(--line); white-space:nowrap}
+.tt thead th{position:sticky; top:0; background:var(--surface-2); z-index:1; font-weight:600; border-bottom:2px solid var(--ink)}
+.tt .idx{color:var(--ink-2); font-size:12px; width:1%}
+.tt .idxbtn{border:0; background:transparent; padding:0 4px; cursor:pointer; font:inherit; color:inherit}
+.tt .out{border-left:2px solid var(--ink)}
+.tt td.out.one{background:var(--hi-bg); color:var(--hi-text); font-weight:700}
+.tt td.zero{color:var(--ink-2)}
+.tt .mid{display:none; color:var(--ink-2); font-size:13px}
+.tt.show-mid .mid{display:table-cell}
+.tt tbody tr{cursor:pointer}
+.tt tbody tr:hover td{background:var(--surface-2)}
+.tt tbody tr.cur td{background:var(--row-cur)}
+.tt tbody tr.cur td.out.one{background:var(--hi-bg)}
+.tt tbody tr.cur td:first-child{box-shadow:inset 3px 0 var(--accent)}
+.tt tbody tr:last-child td{border-bottom:0}
+
+/* K-Map */
+.kmap-wrap{direction:ltr; overflow:auto; display:flex; justify-content:center; padding:6px 0}
+table.kmap{border-collapse:collapse; font-family:var(--font-mono); font-size:15px}
+.kmap th,.kmap td{border:1px solid var(--line); text-align:center; min-width:62px; height:52px; position:relative}
+.kmap th{background:var(--surface-2); color:var(--ink-2); font-weight:600; font-size:13px; padding:6px 12px}
+.kmap th.corner{background:var(--surface); color:var(--ink); font-size:12.5px; border-right:2px solid var(--ink); border-bottom:2px solid var(--ink)}
+.kmap thead th:not(.corner){border-bottom:2px solid var(--ink)}
+.kmap tbody th{border-right:2px solid var(--ink)}
+.kmap td{cursor:pointer; font-weight:500; color:var(--ink-2); transition:background .12s}
+.kmap td:hover{background:var(--surface-2)}
+.kmap td.one{background:var(--hi-bg); color:var(--hi-text); font-weight:700}
+.kmap td.cur{outline:2.5px solid var(--accent); outline-offset:-2.5px; z-index:1}
+.kmap .kidx{position:absolute; top:3px; left:5px; font-size:10px; color:var(--ink-2); opacity:.75; font-weight:400}
+.kmap-note{margin:0; color:var(--ink-2); font-size:14px}
+
+/* Forms */
+.forms{margin:0}
+.forms dt{font-size:13px; font-weight:600; color:var(--ink-2); margin-top:14px}
+.forms dt:first-child{margin-top:0}
+.forms dd{margin:4px 0 0; font-family:var(--font-mono); overflow-wrap:anywhere; word-break:break-word}
+.forms dd bdi{unicode-bidi:isolate}
+.forms .plain{font-family:var(--font-ui); font-size:13.5px; color:var(--ink-2)}
+.form-actions{display:flex; flex-wrap:wrap; gap:8px; margin-top:8px}
+.btn-line{
+  border:1px solid var(--accent); color:var(--accent); background:transparent; border-radius:7px;
+  padding:5px 12px; font-size:13px; font-weight:600; cursor:pointer; font-family:var(--font-ui);
+  transition:all .15s;
+}
+.btn-line:hover{background:var(--accent); color:var(--accent-on)}
+.btn-ghost{
+  border:1px solid var(--line); color:var(--ink-2); background:var(--surface-2); border-radius:7px;
+  padding:5px 10px; font-size:12.5px; font-weight:600; cursor:pointer; font-family:var(--font-ui);
+}
+.btn-ghost:hover{border-color:var(--accent); color:var(--accent)}
+
+footer{
+  text-align:center; padding:14px 18px 26px; font-size:13px; color:var(--ink-2);
+  border-top:1px solid var(--line); background:var(--surface);
+}
+
+@media (max-width:560px){
+  .nav-inner{padding:10px 14px}
+  .app{padding:14px 12px 36px}
+  .btn{padding:0 16px}
+  .brand-text span{display:none}
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <div class="brand">
+      <div class="brand-icon" aria-hidden="true">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 4v16M18 4v16M6 12h12"/>
+          <circle cx="6" cy="4" r="1.8" fill="#34d399" stroke="none"/>
+          <circle cx="18" cy="20" r="1.8" fill="#34d399" stroke="none"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <h1 id="tTitle">Hayder Helps You</h1>
+        <span id="tSub">رسام الدوائر المنطقية التفاعلي</span>
+      </div>
+    </div>
+
+    <div class="nav-controls">
+      <div class="lang-seg" role="group" aria-label="Language">
+        <button type="button" class="lang-btn" data-lang="ar" aria-pressed="true">العربية</button>
+        <button type="button" class="lang-btn" data-lang="ku" aria-pressed="false">بادینی</button>
+        <button type="button" class="lang-btn" data-lang="en" aria-pressed="false">EN</button>
+      </div>
+      <button type="button" class="icon-btn" id="themeBtn" title="تغيير المظهر" aria-label="Toggle theme">
+        <svg id="themeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<main class="app">
+  <p class="hero-sub" id="tLede"></p>
+
+  <section class="panel" aria-label="Input">
+    <form id="eqform" autocomplete="off">
+      <label class="field-label" for="eq" id="tEqLabel"></label>
+      <div class="eq-row">
+        <input id="eq" type="text" value="F = A'B + AB'C" spellcheck="false" autocomplete="off" autocapitalize="off" autocorrect="off" aria-describedby="msg">
+        <button class="btn" type="submit" id="tDrawBtn"></button>
+      </div>
+    </form>
+    <div class="keys" role="group" aria-label="Quick symbols">
+      <button class="key" type="button" data-ins="'" aria-label="NOT">'</button>
+      <button class="key" type="button" data-ins=" + " aria-label="OR">+</button>
+      <button class="key" type="button" data-ins="·" aria-label="AND">·</button>
+      <button class="key" type="button" data-ins=" ⊕ " aria-label="XOR">⊕</button>
+      <button class="key" type="button" data-ins="(" aria-label="(">(</button>
+      <button class="key" type="button" data-ins=")" aria-label=")">)</button>
+      <button class="key" type="button" data-ins=" NAND " style="font-size:12px;padding:0 10px">NAND</button>
+      <button class="key" type="button" data-ins=" NOR " style="font-size:12px;padding:0 10px">NOR</button>
+    </div>
+    <div class="examples">
+      <span id="tExamples"></span>
+      <button class="chip" type="button" data-eq="F = A'B + AB'">A'B + AB'</button>
+      <button class="chip" type="button" data-eq="F = (A + B)(A' + C)">(A + B)(A' + C)</button>
+      <button class="chip" type="button" data-eq="F = AB + A'C + BC">AB + A'C + BC</button>
+      <button class="chip" type="button" data-eq="F = A ⊕ B ⊕ C">A ⊕ B ⊕ C</button>
+      <button class="chip" type="button" data-eq="F = (A NAND B) NOR C">(A NAND B) NOR C</button>
+      <button class="chip" type="button" data-eq="F = A'B'C + A'BC' + AB'C' + ABC">A'B'C + A'BC' + AB'C' + ABC</button>
+    </div>
+    <p id="msg" class="msg" role="status" hidden></p>
+    <details class="syntax">
+      <summary id="tSyntaxTitle"></summary>
+      <ul id="tSyntaxList"></ul>
+    </details>
+  </section>
+
+  <div id="result">
+    <section class="panel" aria-label="Circuit">
+      <div class="panel-head">
+        <h2 id="tCircuitTitle"></h2>
+        <div class="panel-tools">
+          <div class="toggles" id="toggles" role="group" aria-label="Inputs"></div>
+          <button type="button" class="btn-sm" id="resetBtn"></button>
+          <button type="button" class="btn-sm" id="dlSvg"></button>
+          <button type="button" class="btn-sm" id="dlPng"></button>
+        </div>
+      </div>
+      <div class="eqcap" id="eqcap"></div>
+      <div class="canvas" id="canvas"></div>
+      <p class="legend" id="legend">
+        <span><i class="l-hi"></i><span id="tSig1"></span></span>
+        <span><i class="l-lo"></i><span id="tSig0"></span></span>
+        <span id="counts"></span>
+      </p>
+    </section>
+
+    <div class="lower">
+      <section class="panel" aria-label="Truth Table">
+        <div class="panel-head">
+          <h2 id="tTTTitle"></h2>
+          <label class="mid-toggle" id="midWrap" hidden><input type="checkbox" id="midChk"> <span id="tMidLabel"></span></label>
+        </div>
+        <div class="tt-wrap" id="ttWrap"><table class="tt" id="tt"></table></div>
+      </section>
+
+      <section class="panel" aria-label="Forms & Simplification">
+        <h2 id="tFormsTitle"></h2>
+        <dl class="forms" id="forms"></dl>
+      </section>
+    </div>
+
+    <section class="panel" aria-label="Karnaugh Map">
+      <div class="panel-head">
+        <h2 id="tKmapTitle"></h2>
+        <span class="toggles-label" id="kmapHint"></span>
+      </div>
+      <div id="kmapBox"></div>
+    </section>
+  </div>
+</main>
+
+<footer id="tFooter"></footer>
+
+<script>
+const I18N = {
+  ar: {
+    dir: "rtl",
+    pageTitle: "Hayder Helps You — رسام الدوائر المنطقية",
+    title: "Hayder Helps You",
+    sub: "رسام الدوائر المنطقية التفاعلي",
+    lede: "اكتب معادلة منطقية بالأحرف A–Z فتظهر الدائرة وجدول الحقيقة وخريطة كارنوف معًا. اضغط على المدخلات لتجربة القيم ومتابعة الإشارة داخل الدائرة.",
+    eqLabel: "المعادلة المنطقية",
+    drawBtn: "ارسم",
+    examples: "أمثلة:",
+    syntaxTitle: "الصيغ المقبولة",
+    syntax: [
+      "AND: <code>AB</code> أو <code>A·B</code> أو <code>A*B</code> أو <code>A AND B</code>",
+      "OR: <code>A+B</code> أو <code>A|B</code> أو <code>A OR B</code>",
+      "NOT: <code>A'</code> أو <code>!A</code> أو <code>~A</code> أو <code>NOT A</code>",
+      "XOR: <code>A⊕B</code> أو <code>A^B</code> أو <code>A XOR B</code>",
+      "NAND و NOR و XNOR: تُكتب كلمات بين حدّين، مثل <code>A NAND B</code>",
+      "الأولوية: NOT ثم AND ثم XOR ثم OR، والأقواس لتغييرها",
+      "اسم الدالة اختياري، مثل <code>F = ...</code> أو <code>F(A,B,C) = ...</code> لتثبيت ترتيب المتغيرات",
+      "الحد الأقصى 6 متغيرات"
+    ],
+    circuitTitle: "الدائرة المنطقية",
+    inputsLabel: "المدخلات:",
+    resetBtn: "تصفير (0)",
+    dlSvg: "تحميل SVG",
+    dlPng: "تحميل PNG",
+    sig1: "إشارة 1",
+    sig0: "إشارة 0",
+    gatesCount: (g, inv) => `البوابات: ${g} · العاكسات: ${inv}`,
+    ttTitle: "جدول الحقيقة",
+    midLabel: "إظهار نتائج البوابات الوسيطة",
+    formsTitle: "الصيغ والتبسيط",
+    minterms: fn => `الحدود الصغرى (حيث ${fn} = 1)`,
+    maxterms: fn => `الحدود الكبرى (حيث ${fn} = 0)`,
+    canonSop: "مجموع حواصل الضرب القانوني (Canonical SOP)",
+    minSop: "الصيغة المبسّطة (Minimal SOP)",
+    minPos: "الصيغة المبسّطة (Minimal POS)",
+    drawSop: "ارسم الدائرة المبسّطة (SOP)",
+    drawPos: "ارسم الدائرة المبسّطة (POS)",
+    copy: "نسخ",
+    copied: "تم النسخ ✓",
+    constNote: "الدالة ثابتة في كل الحالات، فلا توجد دائرة مبسّطة.",
+    varsTitle: "المتغيرات",
+    varsNote: "(الأول هو الأعلى وزنًا في ترتيب الصفوف)",
+    kmapTitle: "خريطة كارنوف (K-Map)",
+    kmapHint: "اضغط على أي خلية لتجربة قيمها في الدائرة",
+    kmapUnsupported: "خريطة كارنوف مدعومة للمسائل من 2 إلى 4 متغيرات فقط.",
+    footer: "© Hayder Helps You — رسام الدوائر المنطقية · يعمل بالكامل داخل المتصفح بدون إنترنت",
+    err: {
+      empty: "اكتب معادلة منطقية أولاً.",
+      emptyRhs: "اكتب المعادلة بعد علامة =.",
+      multiEq: "علامة = مكررة، المسموح بعلامة واحدة فقط.",
+      badLhs: "الجهة اليسرى من = غير صالحة. مثال: F = A + B",
+      digits: "الأرقام والثوابت (0 و 1) غير مدعومة. استخدم المتغيرات A–Z فقط.",
+      badChar: ch => `الرمز «${ch}» غير مفهوم.`,
+      missingTerm: "المعادلة ناقصة: ينقص حدّ بعد آخر عملية.",
+      unclosed: "الأقواس غير متوازنة: يوجد قوس مفتوح بلا إغلاق.",
+      extraClose: "الأقواس غير متوازنة: يوجد قوس إغلاق زائد.",
+      badOrder: "ترتيب الرموز غير صحيح، تحقق من المعادلة.",
+      tooMany: n => `المعادلة تحتوي على ${n} متغيرات، والحد الأقصى 6.`
+    }
+  },
+  ku: {
+    dir: "rtl",
+    pageTitle: "Hayder Helps You — وێنەکێشێ بازنێن لۆجیکی",
+    title: "Hayder Helps You",
+    sub: "وێنەکێشێ بازنێن لۆجیکی (کوردی - بادینی)",
+    lede: "هاوکێشەکا لۆجیکی ب پیتێن A–Z بنڤیسە، دێ بازنە و خشتێ ڕاستیێ و نەخشێ کارنۆف پێکڤە دەرکەڤن. کلیک ل سەر تێکەران (Inputs) بکە دا بهایان تاقی بکەی و ئیشارەتێ د ناڤ بازنێ دا ببینی.",
+    eqLabel: "هاوکێشا لۆجیکی",
+    drawBtn: "بکێشە",
+    examples: "نموونە:",
+    syntaxTitle: "شێوازێن قەبوولکری",
+    syntax: [
+      "AND: <code>AB</code> یان <code>A·B</code> یان <code>A*B</code> یان <code>A AND B</code>",
+      "OR: <code>A+B</code> یان <code>A|B</code> یان <code>A OR B</code>",
+      "NOT: <code>A'</code> یان <code>!A</code> یان <code>~A</code> یان <code>NOT A</code>",
+      "XOR: <code>A⊕B</code> یان <code>A^B</code> یان <code>A XOR B</code>",
+      "NAND و NOR و XNOR: وەک پەیڤ د ناڤبەرا دوو حەدان دا دهێنە نڤیسین، وەک <code>A NAND B</code>",
+      "ڕێزبەندیا کریاران: NOT پاشی AND پاشی XOR پاشی OR، و کەوانە بۆ گوهۆڕینا وێ",
+      "ناڤێ نەخشێ ئارەزوومەندانەیە، وەک <code>F = ...</code> یان <code>F(A,B,C) = ...</code> بۆ جێگیرکرنا ڕێزبەندیا گوهۆڕکان",
+      "زۆرترین هەژمار 6 گوهۆڕک (Variables) نە"
+    ],
+    circuitTitle: "بازنێ لۆجیکی",
+    inputsLabel: "تێکەر:",
+    resetBtn: "سفرکرن (0)",
+    dlSvg: "داگرتنا SVG",
+    dlPng: "داگرتنا PNG",
+    sig1: "ئیشارەتا 1",
+    sig0: "ئیشارەتا 0",
+    gatesCount: (g, inv) => `دەرگەهـ: ${g} · ڤەگێڕ (NOT): ${inv}`,
+    ttTitle: "خشتێ ڕاستیێ (Truth Table)",
+    midLabel: "نیشاندانا ئەنجامێن دەرگەهێن ناڤنجی",
+    formsTitle: "شێواز و سادەکرن",
+    minterms: fn => `سنوورێن بچووک - Minterms (دەمێ ${fn} = 1)`,
+    maxterms: fn => `سنوورێن مەزن - Maxterms (دەمێ ${fn} = 0)`,
+    canonSop: "شێوازێ یاسایی (Canonical SOP)",
+    minSop: "شێوازێ سادەکری (Minimal SOP)",
+    minPos: "شێوازێ سادەکری (Minimal POS)",
+    drawSop: "بازنێ سادەکری بکێشە (SOP)",
+    drawPos: "بازنێ سادەکری بکێشە (POS)",
+    copy: "کۆپی بکە",
+    copied: "هاتە کۆپیکرن ✓",
+    constNote: "نەخشە د هەمی حالەتان دا جێگیرە، لەوما بازنێ سادەکری نینە.",
+    varsTitle: "گوهۆڕک (Variables)",
+    varsNote: "(ئێکەم پیت خۆدانا بلندترین بهایە د ڕێزکرنا ڕێزان دا)",
+    kmapTitle: "نەخشێ کارنۆف (K-Map)",
+    kmapHint: "کلیک ل سەر هەر خانەکێ بکە دا بهایێ وێ د بازنێ دا تاقی بکەی",
+    kmapUnsupported: "نەخشێ کارنۆف بتنێ بۆ 2 هەتا 4 گوهۆڕکان کار دکەت.",
+    footer: "© Hayder Helps You — وێنەکێشێ بازنێن لۆجیکی · ب تەمامی د ناڤ براوزەری دا بێ ئینتەرنێت کار دکەت",
+    err: {
+      empty: "بەری هەر تشتەکی هاوکێشەکا لۆجیکی بنڤیسە.",
+      emptyRhs: "هاوکێشێ پشتی نیشانا = بنڤیسە.",
+      multiEq: "نیشانا = دووبارە بوویە، بتنێ ئێک نیشان ڕێپێدایە.",
+      badLhs: "لایێ چەپێ یێ = دروست نینە. نموونە: F = A + B",
+      digits: "ژمارە (0 و 1) ناهێنە پشتگیریکرن. بتنێ پیتێن A–Z بکاربینە.",
+      badChar: ch => `نیشانا «${ch}» ناهێتە تێگەهشتن.`,
+      missingTerm: "هاوکێشە یا کێمە: پشتی دوماهی کریارێ تشتەک کێمە.",
+      unclosed: "کەوانە نەدروستن: کەوانەکێ ڤەکری بێ گرتن هەیە.",
+      extraClose: "کەوانە نەدروستن: کەوانەکێ گرتنێ یێ زێدە هەیە.",
+      badOrder: "ڕێزکرنا نیشانان نەدروستە، هاوکێشێ بپشکنە.",
+      tooMany: n => `هاوکێشە ${n} گوهۆڕکان ب خۆ ڤە دگریت، زۆرترین هەژمار 6 نە.`
+    }
+  },
+  en: {
+    dir: "ltr",
+    pageTitle: "Hayder Helps You — Logic Circuit Studio",
+    title: "Hayder Helps You",
+    sub: "Interactive Logic Design Studio",
+    lede: "Enter any Boolean expression using A–Z to generate its interactive logic circuit, truth table, K-Map, and simplified SOP/POS forms.",
+    eqLabel: "Boolean Expression",
+    drawBtn: "Draw",
+    examples: "Examples:",
+    syntaxTitle: "Supported Syntax",
+    syntax: [
+      "AND: <code>AB</code>, <code>A·B</code>, <code>A*B</code>, or <code>A AND B</code>",
+      "OR: <code>A+B</code>, <code>A|B</code>, or <code>A OR B</code>",
+      "NOT: <code>A'</code>, <code>!A</code>, <code>~A</code>, or <code>NOT A</code>",
+      "XOR: <code>A⊕B</code>, <code>A^B</code>, or <code>A XOR B</code>",
+      "NAND, NOR, XNOR: write as keywords between operands, e.g., <code>A NAND B</code>",
+      "Precedence: NOT → AND → XOR → OR (use parentheses to override)",
+      "Function name is optional: <code>F = ...</code> or <code>F(A,B,C) = ...</code> to fix variable order",
+      "Maximum of 6 variables supported"
+    ],
+    circuitTitle: "Logic Circuit",
+    inputsLabel: "Inputs:",
+    resetBtn: "Reset (0)",
+    dlSvg: "Save SVG",
+    dlPng: "Save PNG",
+    sig1: "Signal 1 (HIGH)",
+    sig0: "Signal 0 (LOW)",
+    gatesCount: (g, inv) => `Gates: ${g} · Inverters: ${inv}`,
+    ttTitle: "Truth Table",
+    midLabel: "Show intermediate gates",
+    formsTitle: "Forms & Simplification",
+    minterms: fn => `Minterms (where ${fn} = 1)`,
+    maxterms: fn => `Maxterms (where ${fn} = 0)`,
+    canonSop: "Canonical SOP",
+    minSop: "Minimal SOP",
+    minPos: "Minimal POS",
+    drawSop: "Draw Minimal SOP",
+    drawPos: "Draw Minimal POS",
+    copy: "Copy",
+    copied: "Copied ✓",
+    constNote: "Constant function — no simplified circuit needed.",
+    varsTitle: "Variables",
+    varsNote: "(First variable is the Most Significant Bit)",
+    kmapTitle: "Karnaugh Map (K-Map)",
+    kmapHint: "Click any cell to simulate its input state",
+    kmapUnsupported: "Karnaugh Map is supported for 2 to 4 variables only.",
+    footer: "© Hayder Helps You — Logic Circuit Studio · 100% client-side, works offline",
+    err: {
+      empty: "Please enter a Boolean expression first.",
+      emptyRhs: "Enter an expression after the = sign.",
+      multiEq: "Multiple '=' signs found; only one is allowed.",
+      badLhs: "Invalid left side of '='. Example: F = A + B",
+      digits: "Numeric constants (0 and 1) are not supported. Use variables A–Z only.",
+      badChar: ch => `Unrecognized symbol "${ch}".`,
+      missingTerm: "Incomplete expression: missing operand after the last operator.",
+      unclosed: "Unbalanced parentheses: missing closing ')'.",
+      extraClose: "Unbalanced parentheses: extra closing ')'.",
+      badOrder: "Invalid syntax order. Please check your expression.",
+      tooMany: n => `Expression has ${n} variables; maximum supported is 6.`
+    }
+  }
+};
+
+let currentLang = localStorage.getItem("logic_lang") || "ar";
+if (!I18N[currentLang]) currentLang = "ar";
+const T = () => I18N[currentLang];
+
+class ParseError extends Error{
+  constructor(code, arg){ super(code); this.code = code; this.arg = arg; }
+  localized(){
+    const fn = T().err[this.code];
+    return typeof fn === "function" ? fn(this.arg) : (fn || this.message);
+  }
+}
+const KW={AND:1,OR:1,NOT:1,XOR:1,NAND:1,NOR:1,XNOR:1};
+
+function tokenize(s){
+  const out=[];
+  let i=0;
+  while(i<s.length){
+    const ch=s[i];
+    if(/\s/.test(ch)){i++;continue;}
+    if(/[A-Za-z]/.test(ch)){
+      let j=i;
+      while(j<s.length&&/[A-Za-z]/.test(s[j]))j++;
+      const word=s.slice(i,j).toUpperCase();
+      if(KW[word])out.push({t:word});
+      else for(let k=i;k<j;k++)out.push({t:"VAR",v:s[k].toUpperCase()});
+      i=j;continue;
+    }
+    if(/[0-9٠-٩]/.test(ch))throw new ParseError("digits");
+    if(ch==="(")out.push({t:"LP"});
+    else if(ch===")")out.push({t:"RP"});
+    else if("·*&∧×.•⋅".includes(ch))out.push({t:"AND"});
+    else if("+|∨".includes(ch))out.push({t:"OR"});
+    else if("⊕^".includes(ch))out.push({t:"XOR"});
+    else if(ch==="⊼")out.push({t:"NAND"});
+    else if(ch==="⊽")out.push({t:"NOR"});
+    else if("⊙≡".includes(ch))out.push({t:"XNOR"});
+    else if("!~¬".includes(ch))out.push({t:"PRE"});
+    else if("'′’‘`´".includes(ch))out.push({t:"POST"});
+    else throw new ParseError("badChar", ch);
+    i++;
+  }
+  return out;
+}
+
+function parseTokens(tokens){
+  let p=0;
+  const peek=()=>tokens[p];
+  const mk=(t,args)=>args.length===1?args[0]:{t,args};
+  const mkNot=x=>x.t==="not"?x.a:{t:"not",a:x};
+  const startsUnary=t=>t&&(t.t==="VAR"||t.t==="LP"||t.t==="NOT"||t.t==="PRE");
+  function chain(sub,pos,neg,type,opts){
+    const implicit=opts&&opts.implicit,binary=opts&&opts.binary;
+    let group=[sub()];
+    for(;;){
+      const t=peek();
+      if(t&&t.t===pos){
+        p++;
+        const r=sub();
+        group=binary?[{t:type,args:[mk(type,group),r]}]:group.concat([r]);
+        continue;
+      }
+      if(implicit&&startsUnary(t)){group.push(sub());continue;}
+      if(t&&t.t===neg){
+        p++;
+        const r=sub();
+        group=[mkNot({t:type,args:[mk(type,group),r]})];
+        continue;
+      }
+      break;
+    }
+    return mk(type,group);
+  }
+  const parseOr=()=>chain(parseXor,"OR","NOR","or");
+  const parseXor=()=>chain(parseAnd,"XOR","XNOR","xor",{binary:true});
+  const parseAnd=()=>chain(parseUnary,"AND","NAND","and",{implicit:true});
+  function parseUnary(){
+    const t=peek();
+    if(t&&(t.t==="NOT"||t.t==="PRE")){p++;return mkNot(parseUnary());}
+    let node=parsePrimary();
+    while(peek()&&peek().t==="POST"){p++;node=mkNot(node);}
+    return node;
+  }
+  function parsePrimary(){
+    const t=tokens[p++];
+    if(!t)throw new ParseError("missingTerm");
+    if(t.t==="VAR")return{t:"var",name:t.v};
+    if(t.t==="LP"){
+      const e=parseOr();
+      const c=tokens[p++];
+      if(!c||c.t!=="RP")throw new ParseError("unclosed");
+      return e;
+    }
+    throw new ParseError("badOrder");
+  }
+  const ast=parseOr();
+  if(p<tokens.length){
+    throw new ParseError(tokens[p].t==="RP"?"extraClose":"badOrder");
+  }
+  return ast;
+}
+
+function splitHeader(raw){
+  const parts=raw.split("=");
+  if(parts.length>2)throw new ParseError("multiEq");
+  if(parts.length===1)return{name:"F",declared:[],rhs:parts[0]};
+  const m=/^([A-Za-z][A-Za-z0-9_]*)\s*(?:\(([^)]*)\))?$/.exec(parts[0].trim());
+  if(!m)throw new ParseError("badLhs");
+  const declared=m[2]?(m[2].match(/[A-Za-z]/g)||[]).map(c=>c.toUpperCase()):[];
+  return{name:m[1],declared,rhs:parts[1]};
+}
+
+function ev(n,env){
+  switch(n.t){
+    case "var":return env[n.name]?1:0;
+    case "not":return ev(n.a,env)?0:1;
+    case "and":return n.args.every(a=>ev(a,env))?1:0;
+    case "or":return n.args.some(a=>ev(a,env))?1:0;
+    default:return ev(n.args[0],env)^ev(n.args[1],env);
+  }
+}
+
+function toStr(n){
+  switch(n.t){
+    case "var":return n.name;
+    case "not":return n.a.t==="var"?n.a.name+"'":"("+toStr(n.a)+")'";
+    case "and":return n.args.map(a=>(a.t==="or"||a.t==="xor")?"("+toStr(a)+")":toStr(a)).join("");
+    case "or":return n.args.map(toStr).join(" + ");
+    default:return n.args.map((a,i)=>(a.t==="or"||(a.t==="xor"&&i>0))?"("+toStr(a)+")":toStr(a)).join(" ⊕ ");
+  }
+}
+
+function collectVars(n,set){
+  if(n.t==="var")set.add(n.name);
+  else if(n.t==="not")collectVars(n.a,set);
+  else n.args.forEach(a=>collectVars(a,set));
+  return set;
+}
+
+function buildNet(ast){
+  const gates=[];
+  function ref(node){
+    if(node.t==="var")return{k:"lit",name:node.name,neg:false};
+    if(node.t==="not"&&node.a.t==="var")return{k:"lit",name:node.a.name,neg:true};
+    const core=node.t==="not"?node.a:node;
+    const inputs=core.args.map(ref);
+    let level=1;
+    inputs.forEach(r=>{if(r.k==="gate")level=Math.max(level,r.g.level+1);});
+    const g={id:gates.length,type:core.t,neg:node.t==="not",inputs,level,expr:node};
+    gates.push(g);
+    return{k:"gate",g};
+  }
+  const root=ref(ast);
+  return{gates,root};
+}
+
+function simplify(n,minterms){
+  const N=1<<n;
+  if(minterms.length===0)return{kind:"zero",terms:[]};
+  if(minterms.length===N)return{kind:"one",terms:[]};
+  let cur=new Map();
+  minterms.forEach(m=>cur.set(m+"-0",{bits:m,dash:0}));
+  const primes=[];
+  while(cur.size){
+    const list=[...cur.values()],used=new Set(),nxt=new Map();
+    for(let i=0;i<list.length;i++)for(let j=i+1;j<list.length;j++){
+      const a=list[i],b=list[j];
+      if(a.dash!==b.dash)continue;
+      const d=a.bits^b.bits;
+      if(d&&(d&(d-1))===0){
+        const nb={bits:a.bits&~d,dash:a.dash|d};
+        nxt.set(nb.bits+"-"+nb.dash,nb);used.add(i);used.add(j);
+      }
+    }
+    list.forEach((imp,i)=>{if(!used.has(i))primes.push(imp);});
+    cur=nxt;
+  }
+  const covers=(p,m)=>((m&~p.dash)===p.bits);
+  const popc=x=>{let c=0;while(x){c+=x&1;x>>=1;}return c;};
+  const lits=p=>n-popc(p.dash);
+  const chosen=[];
+  let unc=minterms.slice();
+  minterms.forEach(m=>{
+    const c=primes.filter(p=>covers(p,m));
+    if(c.length===1&&!chosen.includes(c[0]))chosen.push(c[0]);
+  });
+  unc=unc.filter(m=>!chosen.some(p=>covers(p,m)));
+  let best=null;
+  (function solve(rest,pick,cost){
+    if(best&&cost>=best.cost)return;
+    if(rest.length===0){best={cost,pick:pick.slice()};return;}
+    const m=rest[0];
+    for(const p of primes.filter(q=>covers(q,m))){
+      pick.push(p);
+      solve(rest.filter(x=>!covers(p,x)),pick,cost+100+lits(p));
+      pick.pop();
+    }
+  })(unc,[],0);
+  const terms=chosen.concat(best?best.pick:[]).sort((a,b)=>a.bits-b.bits||a.dash-b.dash);
+  return{kind:"sop",terms};
+}
+
+function termStr(imp,vars,sep){
+  const n=vars.length,parts=[];
+  for(let i=0;i<n;i++){
+    const bit=1<<(n-1-i);
+    if(imp.dash&bit)continue;
+    parts.push(vars[i]+((imp.bits&bit)?"":"'"));
+  }
+  return parts.join(sep);
+}
+
+function posTermStr(imp,vars){
+  const n=vars.length,parts=[];
+  for(let i=0;i<n;i++){
+    const bit=1<<(n-1-i);
+    if(imp.dash&bit)continue;
+    parts.push(vars[i]+((imp.bits&bit)?"'":""));
+  }
+  return parts.length>1?"("+parts.join(" + ")+")":parts[0];
+}
+
+function analyze(raw){
+  if(!raw||!raw.trim())throw new ParseError("empty");
+  const h=splitHeader(raw);
+  if(!h.rhs.trim())throw new ParseError("emptyRhs");
+  const ast=parseTokens(tokenize(h.rhs));
+  const usedSet=collectVars(ast,new Set());
+  const vars=[];
+  h.declared.forEach(v=>{if(!vars.includes(v))vars.push(v);});
+  [...usedSet].sort().forEach(v=>{if(!vars.includes(v))vars.push(v);});
+  if(vars.length>6)throw new ParseError("tooMany", vars.length);
+  const usedVars=vars.filter(v=>usedSet.has(v));
+  const net=buildNet(ast);
+  const midGates=net.root.k==="gate"?net.gates.filter(g=>g!==net.root.g):[];
+  const n=vars.length,N=1<<n,rows=[];
+  for(let r=0;r<N;r++){
+    const env={};
+    vars.forEach((v,i)=>{env[v]=(r>>(n-1-i))&1;});
+    rows.push({r,bits:vars.map(v=>env[v]),mids:midGates.map(g=>ev(g.expr,env)),out:ev(ast,env)});
+  }
+  const minterms=rows.filter(x=>x.out).map(x=>x.r);
+  const maxterms=rows.filter(x=>!x.out).map(x=>x.r);
+  const mstr=r=>vars.map((v,i)=>v+(((r>>(n-1-i))&1)?"":"'")).join("");
+  const canon=(minterms.length&&minterms.length<N&&minterms.length<=16)?minterms.map(mstr).join(" + "):null;
+
+  const simp=simplify(n,minterms);
+  let simpStr,simpLoad;
+  if(simp.kind==="zero"){simpStr="0";simpLoad=null;}
+  else if(simp.kind==="one"){simpStr="1";simpLoad=null;}
+  else{
+    simpStr=simp.terms.map(t=>termStr(t,vars,"")).join(" + ");
+    simpLoad=h.name+" = "+simp.terms.map(t=>termStr(t,vars,"·")).join(" + ");
+  }
+
+  const simpPos=simplify(n,maxterms);
+  let posKind,posStr,posLoad;
+  if(simpPos.kind==="zero"){posKind="one";posStr="1";posLoad=null;}
+  else if(simpPos.kind==="one"){posKind="zero";posStr="0";posLoad=null;}
+  else{
+    posKind="pos";
+    posStr=simpPos.terms.map(t=>posTermStr(t,vars)).join("");
+    posLoad=h.name+" = "+simpPos.terms.map(t=>posTermStr(t,vars)).join(" · ");
+  }
+
+  const comps=new Set();
+  const noteComp=r=>{if(r.k==="lit"&&r.neg)comps.add(r.name);};
+  net.gates.forEach(g=>g.inputs.forEach(noteComp));noteComp(net.root);
+  return{
+    name:h.name,ast,eqStr:h.name+" = "+toStr(ast),vars,usedVars,net,midGates,rows,
+    minterms,maxterms,canon,simpKind:simp.kind,simpStr,simpLoad,
+    posKind,posStr,posLoad,inverters:comps.size
+  };
+}
+
+function signals(m,env){
+  const s={};
+  m.usedVars.forEach(v=>{s["v:"+v]=env[v]?1:0;s["v:"+v+"'"]=env[v]?0:1;});
+  m.net.gates.forEach(g=>{s["g:"+g.id]=ev(g.expr,env);});
+  return s;
+}
+
+function assignRows(net){
+  let c=0;
+  function place(g){
+    const k=g.inputs.length,m=Math.ceil(k/2);
+    g.inputs.forEach((r,i)=>{if(i<m&&r.k==="gate")place(r.g);});
+    g.row=c++;
+    g.inputs.forEach((r,i)=>{if(i>=m&&r.k==="gate")place(r.g);});
+  }
+  if(net.root.k==="gate")place(net.root.g);
+}
+
+function renderCircuit(m){
+  const net=m.net,W=64,S=20,GAP=30,TOP=100,BOT=26,INVY=70;
+  assignRows(net);
+  const gates=net.gates;
+  const usesComp={};
+  const addUse=r=>{if(r.k==="lit"&&r.neg)usesComp[r.name]=true;};
+  gates.forEach(g=>g.inputs.forEach(addUse));addUse(net.root);
+
+  const bus={};
+  let bx=44;
+  m.usedVars.forEach(v=>{
+    const b={name:v,x0:bx,hasComp:!!usesComp[v],maxY:0,maxYc:0};
+    if(b.hasComp){b.x1=bx+46;bx=b.x1+36;}else bx+=36;
+    bus[v]=b;
+  });
+  const busEnd=bx;
+
+  let rowTop=TOP;
+  gates.slice().sort((a,b)=>a.row-b.row).forEach(g=>{
+    g.H=(g.inputs.length-1)*S+28;
+    const rh=g.H+GAP;
+    g.cy=rowTop+rh/2;
+    rowTop+=rh;
+  });
+  const maxK=gates.reduce((a,g)=>Math.max(a,g.inputs.length),2);
+  const colW=W+60+8*maxK,gx0=busEnd+46;
+  gates.forEach(g=>{g.x=gx0+(g.level-1)*colW;});
+
+  const parts={wires:[],bodies:[],dots:[],texts:[]};
+  const dedupe=pts=>pts.filter((p,i)=>i===0||p[0]!==pts[i-1][0]||p[1]!==pts[i-1][1]);
+  const pts2=a=>dedupe(a).map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join(" ");
+  const wire=(nt,pts)=>parts.wires.push('<polyline class="net" data-net="'+nt+'" points="'+pts2(pts)+'"/>');
+  const dot=(nt,x,y)=>parts.dots.push('<circle class="dot" data-net="'+nt+'" cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="3.4"/>');
+  const litNet=r=>"v:"+r.name+(r.neg?"'":"");
+
+  function pinX(g,dy){
+    if(g.type==="and")return g.x;
+    const u=dy/(g.H/2),off=0.13*W*(1-u*u);
+    return g.type==="or"?g.x+off:g.x-8+off;
+  }
+
+  gates.forEach(g=>{
+    const k=g.inputs.length,half=Math.ceil(k/2);
+    g.inputs.forEach((r,i)=>{
+      const dy=(i-(k-1)/2)*S,py=g.cy+dy,px=pinX(g,dy);
+      if(r.k==="lit"){
+        const b=bus[r.name],bxx=r.neg?b.x1:b.x0;
+        wire(litNet(r),[[bxx,py],[px,py]]);
+        dot(litNet(r),bxx,py);
+        if(r.neg)b.maxYc=Math.max(b.maxYc,py);else b.maxY=Math.max(b.maxY,py);
+      }else{
+        const c=r.g,cx=c.x+W+(c.neg?8:0);
+        const off=i<half?i:(k-1-i);
+        const chx=g.x-14-8*off;
+        wire("g:"+c.id,[[cx,c.cy],[chx,c.cy],[chx,py],[px,py]]);
+      }
+    });
+  });
+
+  let outY,ox,outNet,height;
+  if(net.root.k==="gate"){
+    const rg=net.root.g,tip=rg.x+W+(rg.neg?8:0);
+    outY=rg.cy;outNet="g:"+rg.id;ox=tip+34;
+    wire(outNet,[[tip,outY],[ox,outY]]);
+    height=rowTop+BOT;
+  }else{
+    const r=net.root,b=bus[r.name],bxx=r.neg?b.x1:b.x0;
+    outY=TOP+30;outNet=litNet(r);ox=busEnd+60;
+    wire(outNet,[[bxx,outY],[ox,outY]]);
+    dot(outNet,bxx,outY);
+    if(r.neg)b.maxYc=Math.max(b.maxYc,outY);else b.maxY=Math.max(b.maxY,outY);
+    height=TOP+60+BOT;
+  }
+
+  m.usedVars.forEach(v=>{
+    const b=bus[v];
+    wire("v:"+v,[[b.x0,34],[b.x0,Math.max(b.maxY,b.hasComp?INVY:0,40)]]);
+    parts.texts.push('<text class="vlabel" x="'+b.x0+'" y="20">'+v+'</text>');
+    if(b.hasComp){
+      const x=b.x0,y=INVY,cn="v:"+v+"'";
+      dot("v:"+v,x,y);
+      wire("v:"+v,[[x,y],[x+7,y]]);
+      parts.bodies.push('<polygon class="gate-body" data-net="'+cn+'" points="'+(x+7)+','+(y-9)+' '+(x+7)+','+(y+9)+' '+(x+23)+','+y+'"/>');
+      parts.bodies.push('<circle class="gate-body" data-net="'+cn+'" cx="'+(x+26.5)+'" cy="'+y+'" r="3.5"/>');
+      wire(cn,[[x+30,y],[b.x1,y]]);
+      wire(cn,[[b.x1,y],[b.x1,Math.max(b.maxYc,y)]]);
+      parts.texts.push('<text class="vlabel" x="'+b.x1+'" y="'+(y-16)+'">'+v+"'</text>");
+    }
+  });
+
+  gates.forEach(g=>{
+    const x=g.x,cy=g.cy,H=g.H,h=H/2,top=cy-h,bot=cy+h,nt="g:"+g.id;
+    let d;
+    if(g.type==="and"){
+      const rx=Math.min(h,W/2);
+      d="M"+x+","+top+" H"+(x+W-rx)+" A"+rx+","+h+" 0 0 1 "+(x+W-rx)+","+bot+" H"+x+" Z";
+    }else{
+      d="M"+x+","+top+" C"+(x+W*0.45)+","+top+" "+(x+W*0.85)+","+(cy-H*0.18)+" "+(x+W)+","+cy+
+        " C"+(x+W*0.85)+","+(cy+H*0.18)+" "+(x+W*0.45)+","+bot+" "+x+","+bot+
+        " Q"+(x+W*0.26)+","+cy+" "+x+","+top+" Z";
+    }
+    parts.bodies.push('<path class="gate-body" data-net="'+nt+'" d="'+d+'"/>');
+    if(g.type==="xor"){
+      parts.bodies.push('<path class="gate-arc" data-net="'+nt+'" d="M'+(x-8)+','+bot+' Q'+(x-8+W*0.26)+','+cy+' '+(x-8)+','+top+'"/>');
+    }
+    if(g.neg)parts.bodies.push('<circle class="gate-body" data-net="'+nt+'" cx="'+(x+W+4)+'" cy="'+cy+'" r="4"/>');
+    const label=({and:["AND","NAND"],or:["OR","NOR"],xor:["XOR","XNOR"]})[g.type][g.neg?1:0];
+    parts.texts.push('<text class="gtag" x="'+(x+W/2)+'" y="'+(bot+12)+'">'+label+'</text>');
+  });
+
+  parts.texts.push('<g class="outg" data-net="'+outNet+'"><circle class="oval" cx="'+(ox+12)+'" cy="'+outY+'" r="12"/><text class="otext" x="'+(ox+12)+'" y="'+(outY+4.5)+'">0</text></g>');
+  parts.texts.push('<text class="olabel" x="'+(ox+30)+'" y="'+(outY+5)+'">'+m.name+'</text>');
+  const width=Math.ceil(ox+30+m.name.length*11+24);
+  const svg='<svg xmlns="http://www.w3.org/2000/svg" width="'+width+'" height="'+height+'" viewBox="0 0 '+width+' '+height+'" role="img">'+
+    parts.wires.join("")+parts.bodies.join("")+parts.dots.join("")+parts.texts.join("")+'</svg>';
+  return{svg,width,height};
+}
+
+function renderKMap(m){
+  const n=m.vars.length;
+  if(n<2||n>4)return null;
+  const g1=[{b:0,l:"0"},{b:1,l:"1"}];
+  const g2=[{b:0,l:"00"},{b:1,l:"01"},{b:3,l:"11"},{b:2,l:"10"}];
+  let rLabel,cLabel,rCodes,cCodes,cBits;
+  if(n===2){rLabel=m.vars[0];cLabel=m.vars[1];rCodes=g1;cCodes=g1;cBits=1;}
+  else if(n===3){rLabel=m.vars[0];cLabel=m.vars[1]+m.vars[2];rCodes=g1;cCodes=g2;cBits=2;}
+  else{rLabel=m.vars[0]+m.vars[1];cLabel=m.vars[2]+m.vars[3];rCodes=g2;cCodes=g2;cBits=2;}
+
+  let html='<div class="kmap-wrap"><table class="kmap"><thead><tr><th class="corner">'+rLabel+' \\ '+cLabel+'</th>';
+  cCodes.forEach(c=>{html+='<th>'+c.l+'</th>';});
+  html+='</tr></thead><tbody>';
+  rCodes.forEach(r=>{
+    html+='<tr><th>'+r.l+'</th>';
+    cCodes.forEach(c=>{
+      const idx=(r.b<<cBits)|c.b;
+      const val=m.rows[idx].out;
+      html+='<td data-r="'+idx+'" class="'+(val?'one':'zero')+'"><span class="kidx">'+idx+'</span>'+val+'</td>';
+    });
+    html+='</tr>';
+  });
+  html+='</tbody></table></div>';
+  return html;
+}
+
+(function(){
+  const $=id=>document.getElementById(id);
+  const el={
+    form:$("eqform"),eq:$("eq"),msg:$("msg"),result:$("result"),toggles:$("toggles"),eqcap:$("eqcap"),
+    canvas:$("canvas"),counts:$("counts"),tt:$("tt"),ttWrap:$("ttWrap"),midWrap:$("midWrap"),midChk:$("midChk"),
+    forms:$("forms"),dlSvg:$("dlSvg"),dlPng:$("dlPng"),resetBtn:$("resetBtn"),kmapBox:$("kmapBox"),
+    kmapHint:$("kmapHint"),themeBtn:$("themeBtn"),themeIcon:$("themeIcon")
+  };
+  let model=null,state={},timer=null,natW=0,lastErr=null;
+
+  function setTheme(mode){
+    document.documentElement.setAttribute("data-theme", mode);
+    localStorage.setItem("logic_theme", mode);
+    el.themeIcon.innerHTML = mode === "dark"
+      ? '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>'
+      : '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+  }
+  const savedTheme = localStorage.getItem("logic_theme");
+  const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  setTheme(savedTheme || (prefersDark ? "dark" : "light"));
+  el.themeBtn.addEventListener("click", () => {
+    const cur = document.documentElement.getAttribute("data-theme");
+    setTheme(cur === "dark" ? "light" : "dark");
+  });
+
+  function applyLang(){
+    const t = T();
+    document.documentElement.lang = currentLang;
+    document.documentElement.dir = t.dir;
+    document.title = t.pageTitle;
+    $("tTitle").textContent = t.title;
+    $("tSub").textContent = t.sub;
+    $("tLede").textContent = t.lede;
+    $("tEqLabel").textContent = t.eqLabel;
+    $("tDrawBtn").textContent = t.drawBtn;
+    $("tExamples").textContent = t.examples;
+    $("tSyntaxTitle").textContent = t.syntaxTitle;
+    $("tSyntaxList").innerHTML = t.syntax.map(s => "<li>"+s+"</li>").join("");
+    $("tCircuitTitle").textContent = t.circuitTitle;
+    el.resetBtn.textContent = t.resetBtn;
+    el.dlSvg.textContent = t.dlSvg;
+    el.dlPng.textContent = t.dlPng;
+    $("tSig1").textContent = t.sig1;
+    $("tSig0").textContent = t.sig0;
+    $("tTTTitle").textContent = t.ttTitle;
+    $("tMidLabel").textContent = t.midLabel;
+    $("tFormsTitle").textContent = t.formsTitle;
+    $("tKmapTitle").textContent = t.kmapTitle;
+    $("tFooter").textContent = t.footer;
+
+    document.querySelectorAll(".lang-btn").forEach(b => {
+      b.setAttribute("aria-pressed", b.dataset.lang === currentLang ? "true" : "false");
+    });
+
+    if (lastErr) showMsg(lastErr.localized());
+    if (model) renderAll();
+  }
+
+  document.querySelectorAll(".lang-btn").forEach(b => {
+    b.addEventListener("click", () => {
+      currentLang = b.dataset.lang;
+      localStorage.setItem("logic_lang", currentLang);
+      applyLang();
+    });
+  });
+
+  function fit(){
+    const svg=el.canvas.querySelector("svg");
+    if(!svg||!natW)return;
+    const s=Math.max(0.72,Math.min(1,(el.canvas.clientWidth-22)/natW));
+    svg.style.width=Math.round(natW*s)+"px";
+    svg.style.height="auto";
+  }
+  window.addEventListener("resize",fit);
+  const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]);
+
+  function showMsg(t){el.msg.textContent=t;el.msg.hidden=false;}
+  function hideMsg(){el.msg.hidden=true;el.msg.textContent="";lastErr=null;}
+
+  function update(){
+    clearTimeout(timer);
+    let m;
+    try{m=analyze(el.eq.value);}
+    catch(e){
+      if(e instanceof ParseError){lastErr=e;showMsg(e.localized());el.result.classList.add("stale");return;}
+      throw e;
+    }
+    hideMsg();
+    el.result.classList.remove("stale");
+    model=m;
+    const old=state;state={};
+    m.vars.forEach(v=>{state[v]=old[v]?1:0;});
+    renderAll();
+  }
+
+  function renderAll(){
+    const m=model, t=T();
+    el.toggles.innerHTML='<span class="toggles-label">'+t.inputsLabel+'</span>'+m.vars.map(v=>
+      '<button type="button" class="tog" data-var="'+v+'" aria-pressed="false"><span class="tn">'+v+'</span><span class="tv">0</span></button>'
+    ).join("");
+    el.eqcap.innerHTML='<code dir="ltr">'+esc(m.eqStr)+'</code>';
+    const drawn=renderCircuit(m);
+    el.canvas.innerHTML=drawn.svg;
+    natW=drawn.width;
+    fit();
+    el.counts.textContent=t.gatesCount(m.net.gates.length, m.inverters);
+
+    const midHead=m.midGates.map(g=>'<th class="mid" dir="ltr">'+esc(toStr(g.expr))+'</th>').join("");
+    let html='<thead><tr><th class="idx">m</th>'+m.vars.map(v=>'<th>'+v+'</th>').join("")+midHead+'<th class="out">'+esc(m.name)+'</th></tr></thead><tbody>';
+    m.rows.forEach(r=>{
+      html+='<tr data-r="'+r.r+'"><td class="idx"><button type="button" class="idxbtn">'+r.r+'</button></td>'+
+        r.bits.map(b=>'<td'+(b?'':' class="zero"')+'>'+b+'</td>').join("")+
+        r.mids.map(b=>'<td class="mid'+(b?'':' zero')+'">'+b+'</td>').join("")+
+        '<td class="out '+(r.out?'one':'zero')+'">'+r.out+'</td></tr>';
+    });
+    el.tt.innerHTML=html+'</tbody>';
+    el.midWrap.hidden=m.midGates.length===0;
+    el.tt.classList.toggle("show-mid",m.midGates.length>0&&el.midChk.checked);
+
+    const fn=esc(m.name);
+    const dl=[];
+    const pr=a=>a.length?a.join(", "):"—";
+    dl.push('<dt>'+t.minterms(fn)+'</dt><dd><bdi dir="ltr">Σm('+pr(m.minterms)+')</bdi></dd>');
+    dl.push('<dt>'+t.maxterms(fn)+'</dt><dd><bdi dir="ltr">ΠM('+pr(m.maxterms)+')</bdi></dd>');
+    if(m.canon)dl.push('<dt>'+t.canonSop+'</dt><dd><bdi dir="ltr">'+esc(m.name+" = "+m.canon)+'</bdi></dd>');
+
+    const sopFull = m.name+" = "+m.simpStr;
+    if(m.simpKind==="sop"){
+      dl.push('<dt>'+t.minSop+'</dt><dd><bdi dir="ltr">'+esc(sopFull)+'</bdi><div class="form-actions"><button type="button" class="btn-line" id="useSimp">'+t.drawSop+'</button><button type="button" class="btn-ghost" data-copy="'+esc(sopFull)+'">'+t.copy+'</button></div></dd>');
+    }else{
+      dl.push('<dt>'+t.minSop+'</dt><dd><bdi dir="ltr">'+esc(sopFull)+'</bdi><br><span class="plain">'+t.constNote+'</span></dd>');
+    }
+
+    const posFull = m.name+" = "+m.posStr;
+    if(m.posKind==="pos"){
+      dl.push('<dt>'+t.minPos+'</dt><dd><bdi dir="ltr">'+esc(posFull)+'</bdi><div class="form-actions"><button type="button" class="btn-line" id="usePos">'+t.drawPos+'</button><button type="button" class="btn-ghost" data-copy="'+esc(posFull)+'">'+t.copy+'</button></div></dd>');
+    }else{
+      dl.push('<dt>'+t.minPos+'</dt><dd><bdi dir="ltr">'+esc(posFull)+'</bdi></dd>');
+    }
+
+    dl.push('<dt>'+t.varsTitle+'</dt><dd><bdi dir="ltr">'+esc(m.vars.join(", "))+'</bdi> <span class="plain">'+t.varsNote+'</span></dd>');
+    el.forms.innerHTML=dl.join("");
+
+    const kmapHtml=renderKMap(m);
+    if(kmapHtml){
+      el.kmapBox.innerHTML=kmapHtml;
+      el.kmapHint.textContent=t.kmapHint;
+      el.kmapHint.hidden=false;
+    }else{
+      el.kmapBox.innerHTML='<p class="kmap-note">'+t.kmapUnsupported+'</p>';
+      el.kmapHint.hidden=true;
+    }
+
+    applyState();
+  }
+
+  function applyState(){
+    const m=model;
+    el.toggles.querySelectorAll(".tog").forEach(b=>{
+      const v=b.dataset.var;
+      b.setAttribute("aria-pressed",state[v]?"true":"false");
+      b.querySelector(".tv").textContent=state[v];
+    });
+    const sig=signals(m,state);
+    el.canvas.querySelectorAll("[data-net]").forEach(n=>n.classList.toggle("on",!!sig[n.dataset.net]));
+    const ot=el.canvas.querySelector(".otext");
+    if(ot)ot.textContent=ev(m.ast,state);
+    const r=m.vars.reduce((a,v)=>a*2+state[v],0);
+    const prev=el.tt.querySelector("tr.cur");
+    if(prev)prev.classList.remove("cur");
+    const row=el.tt.querySelector('tr[data-r="'+r+'"]');
+    if(row){
+      row.classList.add("cur");
+      const wrap=el.ttWrap,head=el.tt.tHead?el.tt.tHead.offsetHeight:0;
+      if(row.offsetTop<wrap.scrollTop+head||row.offsetTop+row.offsetHeight>wrap.scrollTop+wrap.clientHeight){
+        wrap.scrollTop=Math.max(0,row.offsetTop-wrap.clientHeight/2);
+      }
+    }
+    const prevK=el.kmapBox.querySelector("td.cur");
+    if(prevK)prevK.classList.remove("cur");
+    const cellK=el.kmapBox.querySelector('td[data-r="'+r+'"]');
+    if(cellK)cellK.classList.add("cur");
+  }
+
+  function setRowState(r){
+    const n=model.vars.length;
+    model.vars.forEach((v,i)=>{state[v]=(r>>(n-1-i))&1;});
+    applyState();
+  }
+
+  function buildExportSVG(){
+    const svg=el.canvas.querySelector("svg");
+    if(!svg||!model)return null;
+    const cs=getComputedStyle(document.documentElement);
+    const g=v=>cs.getPropertyValue(v).trim();
+    const clone=svg.cloneNode(true);
+    clone.removeAttribute("style");
+    const style=document.createElementNS("http://www.w3.org/2000/svg","style");
+    style.textContent=
+      `.net{fill:none;stroke:${g("--lo")};stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}`+
+      `.net.on{stroke:${g("--hi")};stroke-width:2.5}`+
+      `.dot{fill:${g("--lo")}}.dot.on{fill:${g("--hi")}}`+
+      `.gate-body{fill:${g("--surface")};stroke:${g("--ink")};stroke-width:1.8;stroke-linejoin:round}`+
+      `.gate-body.on{stroke:${g("--hi")}}`+
+      `.gate-arc{fill:none;stroke:${g("--ink")};stroke-width:1.8}.gate-arc.on{stroke:${g("--hi")}}`+
+      `.gtag{font:600 9.5px monospace;fill:${g("--ink-2")};text-anchor:middle}`+
+      `.vlabel{font:600 14px monospace;fill:${g("--ink")};text-anchor:middle}`+
+      `.olabel{font:600 16px monospace;fill:${g("--ink")}}`+
+      `.oval{fill:${g("--surface")};stroke:${g("--lo")};stroke-width:1.8}`+
+      `.otext{font:600 13px monospace;fill:${g("--ink")};text-anchor:middle}`+
+      `.outg.on .oval{fill:${g("--hi")};stroke:${g("--hi")}}`+
+      `.outg.on .otext{fill:${g("--hi-on")}}`;
+    const bg=document.createElementNS("http://www.w3.org/2000/svg","rect");
+    bg.setAttribute("width","100%");bg.setAttribute("height","100%");bg.setAttribute("fill",g("--surface"));
+    clone.insertBefore(bg,clone.firstChild);
+    clone.insertBefore(style,clone.firstChild);
+    return {
+      data: new XMLSerializer().serializeToString(clone),
+      w: parseInt(clone.getAttribute("width"), 10) || 600,
+      h: parseInt(clone.getAttribute("height"), 10) || 300
+    };
+  }
+
+  function downloadSVG(){
+    const exp = buildExportSVG();
+    if(!exp)return;
+    const blob=new Blob([exp.data],{type:"image/svg+xml;charset=utf-8"});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement("a");
+    a.href=url;a.download=model.name+"_circuit.svg";
+    document.body.appendChild(a);a.click();a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function downloadPNG(){
+    const exp = buildExportSVG();
+    if(!exp)return;
+    const scale = 2;
+    const img = new Image();
+    const blob = new Blob([exp.data], {type:"image/svg+xml;charset=utf-8"});
+    const url = URL.createObjectURL(blob);
+    img.onload = () => {
+      const c = document.createElement("canvas");
+      c.width = exp.w * scale; c.height = exp.h * scale;
+      const ctx = c.getContext("2d");
+      ctx.scale(scale, scale);
+      ctx.drawImage(img, 0, 0);
+      URL.revokeObjectURL(url);
+      c.toBlob(b => {
+        const u = URL.createObjectURL(b);
+        const a = document.createElement("a");
+        a.href = u; a.download = model.name + "_circuit.png";
+        document.body.appendChild(a); a.click(); a.remove();
+        URL.revokeObjectURL(u);
+      }, "image/png");
+    };
+    img.src = url;
+  }
+
+  el.toggles.addEventListener("click",e=>{
+    const b=e.target.closest(".tog");
+    if(!b)return;
+    state[b.dataset.var]=state[b.dataset.var]?0:1;
+    applyState();
+  });
+  el.resetBtn.addEventListener("click",()=>{
+    if(!model)return;
+    model.vars.forEach(v=>{state[v]=0;});
+    applyState();
+  });
+  el.tt.addEventListener("click",e=>{
+    const tr=e.target.closest("tr[data-r]");
+    if(!tr||!model)return;
+    setRowState(+tr.dataset.r);
+  });
+  el.kmapBox.addEventListener("click",e=>{
+    const td=e.target.closest("td[data-r]");
+    if(!td||!model)return;
+    setRowState(+td.dataset.r);
+  });
+  el.forms.addEventListener("click",e=>{
+    if(e.target.id==="useSimp"&&model&&model.simpLoad){el.eq.value=model.simpLoad;update();return;}
+    if(e.target.id==="usePos"&&model&&model.posLoad){el.eq.value=model.posLoad;update();return;}
+    const cp=e.target.closest("[data-copy]");
+    if(cp){
+      navigator.clipboard && navigator.clipboard.writeText(cp.dataset.copy).then(()=>{
+        const orig=cp.textContent;
+        cp.textContent=T().copied;
+        setTimeout(()=>{cp.textContent=orig;},1300);
+      });
+    }
+  });
+  el.dlSvg.addEventListener("click",downloadSVG);
+  el.dlPng.addEventListener("click",downloadPNG);
+  el.midChk.addEventListener("change",()=>{el.tt.classList.toggle("show-mid",el.midChk.checked);});
+  el.eq.addEventListener("input",()=>{clearTimeout(timer);timer=setTimeout(update,220);});
+  el.form.addEventListener("submit",e=>{e.preventDefault();update();});
+  document.querySelectorAll(".key").forEach(b=>{
+    b.addEventListener("mousedown",e=>e.preventDefault());
+    b.addEventListener("click",()=>{
+      const i=el.eq,s=i.selectionStart==null?i.value.length:i.selectionStart,t=i.selectionEnd==null?s:i.selectionEnd;
+      i.setRangeText(b.dataset.ins,s,t,"end");
+      i.focus();
+      update();
+    });
+  });
+  document.querySelectorAll(".chip").forEach(b=>{
+    b.addEventListener("click",()=>{el.eq.value=b.dataset.eq;update();});
+  });
+
+  applyLang();
+  update();
+})();
+</script>
+</body>
+</html>
