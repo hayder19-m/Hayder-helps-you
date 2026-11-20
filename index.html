@@ -4,6 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#2563eb">
+<meta name="description" content="Hayder Helps You — رسام الدوائر المنطقية التفاعلي، جدول الحقيقة، خريطة كارنوف (K-Map)، وتبسيط SOP و POS باللغة العربية والكوردية البادينية والإنجليزية.">
+<meta property="og:title" content="Hayder Helps You — رسام الدوائر المنطقية">
+<meta property="og:description" content="أداة تفاعلية لطلاب التصميم المنطقي (Logic Design): رسم الدوائر المنطقية، جدول الحقيقة، خريطة كارنوف، وتبسيط المعادلات.">
+<meta property="og:type" content="website">
 <title>Hayder Helps You — رسام الدوائر المنطقية</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%232563eb'/%3E%3Cstop offset='100%25' stop-color='%230ea5e9'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Cpath d='M19 16v32M45 16v32M19 32h26' stroke='%23fff' stroke-width='6' stroke-linecap='round'/%3E%3Ccircle cx='19' cy='16' r='4' fill='%2334d399'/%3E%3Ccircle cx='45' cy='48' r='4' fill='%2334d399'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -94,9 +98,10 @@ code,.mono{font-family:var(--font-mono)}
 .icon-btn{
   width:36px; height:36px; border-radius:9px; border:1px solid var(--line);
   background:var(--surface); color:var(--ink); display:grid; place-items:center;
-  cursor:pointer; transition:border-color .15s, color .15s;
+  cursor:pointer; text-decoration:none; transition:border-color .15s, color .15s, background .15s;
 }
 .icon-btn:hover{border-color:var(--accent); color:var(--accent)}
+.icon-btn.ig-nav:hover{border-color:#e1306c; color:#e1306c}
 
 /* Main Container */
 .app{
@@ -278,10 +283,27 @@ table.kmap{border-collapse:collapse; font-family:var(--font-mono); font-size:15p
 }
 .btn-ghost:hover{border-color:var(--accent); color:var(--accent)}
 
+/* Footer & Socials */
 footer{
-  text-align:center; padding:14px 18px 26px; font-size:13px; color:var(--ink-2);
+  text-align:center; padding:18px 18px 28px; font-size:13px; color:var(--ink-2);
   border-top:1px solid var(--line); background:var(--surface);
+  display:flex; flex-direction:column; align-items:center; gap:12px;
 }
+.social-links{display:flex; flex-wrap:wrap; justify-content:center; gap:10px}
+.social-btn{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:7px 16px; border-radius:999px; text-decoration:none;
+  font-size:13.5px; font-weight:600; color:var(--ink);
+  background:var(--surface-2); border:1px solid var(--line);
+  transition:transform .12s, border-color .15s, color .15s, box-shadow .15s;
+}
+.social-btn .handle{font-family:var(--font-mono); font-size:13px; direction:ltr; unicode-bidi:isolate; opacity:.85}
+.social-btn.ig:hover{
+  border-color:#e1306c; color:#e1306c;
+  box-shadow:0 3px 10px rgba(225,48,108,.16);
+  transform:translateY(-1px);
+}
+.social-btn svg{flex-shrink:0}
 
 @media (max-width:560px){
   .nav-inner{padding:10px 14px}
@@ -315,6 +337,13 @@ footer{
         <button type="button" class="lang-btn" data-lang="ku" aria-pressed="false">بادینی</button>
         <button type="button" class="lang-btn" data-lang="en" aria-pressed="false">EN</button>
       </div>
+      <a class="icon-btn ig-nav" href="https://www.instagram.com/8cb_0/" target="_blank" rel="noopener noreferrer" title="Instagram @8cb_0" aria-label="Instagram @8cb_0">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+          <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+        </svg>
+      </a>
       <button type="button" class="icon-btn" id="themeBtn" title="تغيير المظهر" aria-label="Toggle theme">
         <svg id="themeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
@@ -406,7 +435,20 @@ footer{
   </div>
 </main>
 
-<footer id="tFooter"></footer>
+<footer>
+  <div class="social-links">
+    <a class="social-btn ig" href="https://www.instagram.com/8cb_0/" target="_blank" rel="noopener noreferrer">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+      </svg>
+      <span id="tFollowIg">تابعني على إنستغرام</span>
+      <span class="handle">@8cb_0</span>
+    </a>
+  </div>
+  <div id="tFooter"></div>
+</footer>
 
 <script>
 const I18N = {
@@ -456,6 +498,7 @@ const I18N = {
     kmapTitle: "خريطة كارنوف (K-Map)",
     kmapHint: "اضغط على أي خلية لتجربة قيمها في الدائرة",
     kmapUnsupported: "خريطة كارنوف مدعومة للمسائل من 2 إلى 4 متغيرات فقط.",
+    followIg: "تابعني على إنستغرام",
     footer: "© Hayder Helps You — رسام الدوائر المنطقية · يعمل بالكامل داخل المتصفح بدون إنترنت",
     err: {
       empty: "اكتب معادلة منطقية أولاً.",
@@ -517,6 +560,7 @@ const I18N = {
     kmapTitle: "نەخشێ کارنۆف (K-Map)",
     kmapHint: "کلیک ل سەر هەر خانەکێ بکە دا بهایێ وێ د بازنێ دا تاقی بکەی",
     kmapUnsupported: "نەخشێ کارنۆف بتنێ بۆ 2 هەتا 4 گوهۆڕکان کار دکەت.",
+    followIg: "حسابێ من ل ئینستاگرامی",
     footer: "© Hayder Helps You — وێنەکێشێ بازنێن لۆجیکی · ب تەمامی د ناڤ براوزەری دا بێ ئینتەرنێت کار دکەت",
     err: {
       empty: "بەری هەر تشتەکی هاوکێشەکا لۆجیکی بنڤیسە.",
@@ -578,6 +622,7 @@ const I18N = {
     kmapTitle: "Karnaugh Map (K-Map)",
     kmapHint: "Click any cell to simulate its input state",
     kmapUnsupported: "Karnaugh Map is supported for 2 to 4 variables only.",
+    followIg: "Follow on Instagram",
     footer: "© Hayder Helps You — Logic Circuit Studio · 100% client-side, works offline",
     err: {
       empty: "Please enter a Boolean expression first.",
@@ -595,7 +640,8 @@ const I18N = {
   }
 };
 
-let currentLang = localStorage.getItem("logic_lang") || "ar";
+const store={get:k=>{try{return localStorage.getItem(k);}catch(_){return null;}},set:(k,v)=>{try{localStorage.setItem(k,v);}catch(_){}}};
+let currentLang = store.get("logic_lang") || "ar";
 if (!I18N[currentLang]) currentLang = "ar";
 const T = () => I18N[currentLang];
 
@@ -781,18 +827,46 @@ function simplify(n,minterms){
     if(c.length===1&&!chosen.includes(c[0]))chosen.push(c[0]);
   });
   unc=unc.filter(m=>!chosen.some(p=>covers(p,m)));
-  let best=null;
-  (function solve(rest,pick,cost){
-    if(best&&cost>=best.cost)return;
-    if(rest.length===0){best={cost,pick:pick.slice()};return;}
-    const m=rest[0];
-    for(const p of primes.filter(q=>covers(q,m))){
-      pick.push(p);
-      solve(rest.filter(x=>!covers(p,x)),pick,cost+100+lits(p));
-      pick.pop();
+  let best={cost:0,pick:[]};
+  if(unc.length){
+    let rem=unc.slice(),gPick=[],gCost=0;
+    while(rem.length){
+      let bp=null,bc=-1,bl=999;
+      for(const p of primes){
+        let cnt=0;
+        for(const x of rem)if(covers(p,x))cnt++;
+        const lp=lits(p);
+        if(cnt>bc||(cnt===bc&&lp<bl)){bc=cnt;bl=lp;bp=p;}
+      }
+      gPick.push(bp);gCost+=100+bl;
+      rem=rem.filter(x=>!covers(bp,x));
     }
-  })(unc,[],0);
-  const terms=chosen.concat(best?best.pick:[]).sort((a,b)=>a.bits-b.bits||a.dash-b.dash);
+    best={cost:gCost,pick:gPick};
+    const deadline=(typeof performance!=="undefined"?performance.now():Date.now())+60;
+    let ops=0,timedOut=false;
+    (function solve(rest,pick,cost){
+      if(timedOut||cost>=best.cost)return;
+      if((++ops&255)===0&&(typeof performance!=="undefined"?performance.now():Date.now())>deadline){timedOut=true;return;}
+      if(rest.length===0){best={cost,pick:pick.slice()};return;}
+      let m=rest[0],minC=9999;
+      for(const x of rest){
+        let c=0;for(const q of primes)if(covers(q,x))c++;
+        if(c<minC){minC=c;m=x;if(c<=2)break;}
+      }
+      const cands=primes.filter(q=>covers(q,m)).sort((a,b)=>{
+        let ca=0,cb=0;
+        for(const x of rest){if(covers(a,x))ca++;if(covers(b,x))cb++;}
+        return cb-ca||lits(a)-lits(b);
+      });
+      for(const p of cands){
+        pick.push(p);
+        solve(rest.filter(x=>!covers(p,x)),pick,cost+100+lits(p));
+        pick.pop();
+        if(timedOut)return;
+      }
+    })(unc,[],0);
+  }
+  const terms=chosen.concat(best.pick).sort((a,b)=>a.bits-b.bits||a.dash-b.dash);
   return{kind:"sop",terms};
 }
 
@@ -1043,12 +1117,12 @@ function renderKMap(m){
 
   function setTheme(mode){
     document.documentElement.setAttribute("data-theme", mode);
-    localStorage.setItem("logic_theme", mode);
+    store.set("logic_theme", mode);
     el.themeIcon.innerHTML = mode === "dark"
       ? '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>'
       : '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
   }
-  const savedTheme = localStorage.getItem("logic_theme");
+  const savedTheme = store.get("logic_theme");
   const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
   setTheme(savedTheme || (prefersDark ? "dark" : "light"));
   el.themeBtn.addEventListener("click", () => {
@@ -1079,6 +1153,7 @@ function renderKMap(m){
     $("tMidLabel").textContent = t.midLabel;
     $("tFormsTitle").textContent = t.formsTitle;
     $("tKmapTitle").textContent = t.kmapTitle;
+    $("tFollowIg").textContent = t.followIg;
     $("tFooter").textContent = t.footer;
 
     document.querySelectorAll(".lang-btn").forEach(b => {
@@ -1092,7 +1167,7 @@ function renderKMap(m){
   document.querySelectorAll(".lang-btn").forEach(b => {
     b.addEventListener("click", () => {
       currentLang = b.dataset.lang;
-      localStorage.setItem("logic_lang", currentLang);
+      store.set("logic_lang", currentLang);
       applyLang();
     });
   });
